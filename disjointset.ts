@@ -26,6 +26,7 @@ class TreeNode {
 	private parent: TreeNode;
 	private size: number; // number of nodes in the tree rooted at the node
 	private min: number; // the minimum member of the tree rooted at the node
+	private children: Set<TreeNode>;
 
 	constructor(val: number) {
 		this.val = val;
@@ -65,5 +66,9 @@ class TreeNode {
 
 	public set setMin(min: number) {
 		this.min = min;
+	}
+
+	public get getChildren() : Set<TreeNode> {
+		return this.children;
 	}
 }
