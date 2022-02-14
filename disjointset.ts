@@ -103,10 +103,117 @@ class DisjointSet {
 		}
 	}
 
-	// delete(x:number) : void {
-	// 		optional implementation if it helps you answer the
-	// 		question in README.md
-	// }
+	/*
+	Analysis of time complexity of the delete operation
+	  * Deleting a leaf node is in constant time (O(1))
+	  * Deleting a non-leaf node is more complicated:
+		* Finding the root of the node - O(log n) worst case time,
+		  where n is the number of nodes in the set containing 
+		  the node to be deleted
+		* Finding an arbitrary leaf in the subtree of the node and swap them
+		  - O(log n) worst case time
+		* Overall, the time complexity is O(log n)
+	  * Deleting the minimum member of a set:
+		Following the above operations, We need to traverse the tree
+		and find the new minimum member of the set 
+		- O(n) time, where n is the size of the set
+	*/
+	public delete(x: number) : void {
+		/*
+		Deletes x from the set it belongs to
+		if x is a member of the collection
+		Args:
+			x: value of an element
+		Returns:
+			no returns
+		*/
+		// if x is not a member
+		if (!this._numToNode.has(x)) {
+			return;
+		}
+
+		var node: TreeNode = this._numToNode.get(x); // node to be deleted
+		var rootVal: number = this.find(node.val);
+		var root: TreeNode = this._numToNode.get(rootVal);
+		this._numToNode.delete(x);
+		root.size -= 1;
+		
+		// if it is a node in a singleton set
+		if (node.parent === node && node.children.size == 0) {
+			this._rootSet.delete(node);
+			node.parent = null;
+			return;
+		}
+
+		// if it is a leaf node
+		if (node.children.size == 0) {
+			var parentNode: TreeNode = node.parent;
+			parentNode.children.delete(node);
+		} else { // if it is a non-leaf node
+			// find an arbitary leaf
+			var leaf: TreeNode = node;
+
+			while (leaf.children.size != 0) {
+				var iterator = leaf.children.values();
+				leaf = iterator.next().value;
+			}
+
+			// swap the values of the node and leaf
+			var leafVal: number = leaf.val;
+			this.swap(node, leaf);
+			this._numToNode.set(leafVal, node);
+ 
+			// remove the leaf from its parent's children set
+			var leafParent: TreeNode = leaf.parent;
+			leafParent.children.delete(leaf);
+			leaf.parent = null;
+		}
+		
+		// if the minimum member of the set was deleted, find a new one
+		if (x == root.min) {
+			root.min = this.findMin(root);
+		}
+	}
+
+	private swap(node1: TreeNode, node2: TreeNode) : void {
+		/*
+		Swaps the values of two nodes
+		Args:
+			node1: the first tree node
+			node2: the second tree node
+		Returns:
+			no returns
+		*/
+		const temp: number = node1.val;
+		node1.val = node2.val;
+		node2.val = temp;
+	}
+
+	private findMin(root: TreeNode) : number {
+		/*
+		Finds the value of the minimum member of the tree 
+		rooted at the node root using Divide & Conquer
+		Arg:
+			root: the root node of a tree
+		Returns:
+			the value of the minimum member
+		*/
+		if (root.children.size == 0) {
+			return root.val;
+		}
+
+		var min: number = root.val;
+
+		root.children.forEach((value) => {
+			var childMin = this.findMin(value);
+
+			if (childMin < min) {
+				min = childMin;
+			}
+		});
+
+		return min;
+	}
 
 	// Getters
 	public get numToNode() : Map<number, TreeNode> {
