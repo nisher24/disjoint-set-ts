@@ -377,3 +377,39 @@ class SetLog {
 		});
 	}
 }
+
+class Main {
+	public main() : void {
+		// pass in file path from command line arguments
+		const args = argv.slice(2);
+	
+		if (args.length < 1) {
+			console.log("It requires a file path to be provided.");
+			return;
+		}
+		
+		if (args.length > 1) {
+			console.log("Please provide only one path to a file.");
+			return;
+		}
+		
+		// create a disjoint set and read input data from the file provided
+		var filePath: string = args[0];
+		var sets = new DisjointSet();
+		var reader = new FileReader(filePath, sets);
+		
+		try {
+			reader.readFile();
+		} catch (err) {
+			console.log(`error: ${ err.message }`);
+			return;
+		}
+	
+		// log the set information
+		var log = new SetLog(sets);
+		log.logSet();
+	}
+}
+
+var main = new Main();
+main.main();
