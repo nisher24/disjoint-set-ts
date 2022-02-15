@@ -324,10 +324,38 @@ class FileReader {
 					this._sets.union(nums[i], nums[i + 1]);
 				}
 		
-				console.log(nums);
+				// console.log(nums);
 			}
 		} catch (err) {
-			console.log(`error: ${err.message}`);
+			throw err;
 		}
+	}
+}
+
+class SetLog {
+	private _sets: DisjointSet;
+
+	constructor(sets: DisjointSet) {
+		this._sets = sets;
+	}
+
+	public logSet() : void {
+		/*
+		Output the number of sets, the minimum member and 
+		size of each set in a disjoint set
+		Args:
+			no args
+		Returns:
+			no returns
+		*/
+		var roots = this._sets.rootSet;
+		console.log(`The number of sets is ${ roots.size }.`);
+		console.log('The minimum member and the size of each set are:');
+		console.log('Min  Size');
+		console.log('*********');
+
+		roots.forEach((value) => {
+			console.log(`${ value.min }  ${ value.size }`);
+		});
 	}
 }
