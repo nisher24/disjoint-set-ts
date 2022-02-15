@@ -1,4 +1,4 @@
-import { argv } from 'process';
+import { argv, setgroups } from 'process';
 import lineByLine = require('n-readlines');
 
 class DisjointSet {
@@ -307,9 +307,27 @@ class FileReader {
 			while (line = liner.next()) {
 				const arr = line.toString().split(' ');
 				var nums = [];
+
+				// delete operations
+				if (arr.length > 1 && arr[0].toLowerCase() === "delete") {
+					for (let i = 1; i < arr.length; i++) {
+						let num = parseInt(arr[i]);
+
+						if (!isNaN(num)) {
+							nums.push(num);
+						}
+					}
+
+					for (let num of nums) {
+						this._sets.delete(num);
+					}
+
+					continue;
+				}
 		
+				// makeset and union operations
 				for (let str of arr) {
-					var num = parseInt(str);
+					let num = parseInt(str);
 		
 					if (!isNaN(num)) {
 						nums.push(num);
