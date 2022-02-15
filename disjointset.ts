@@ -1,3 +1,6 @@
+import { argv } from 'process';
+import lineByLine = require('n-readlines');
+
 class DisjointSet {
 	private _numToNode: Map<number, TreeNode>;
 	private _rootSet: Set<TreeNode>;
@@ -275,5 +278,56 @@ class TreeNode {
 
 	public get children() : Set<TreeNode> {
 		return this._children;
+	}
+}
+
+class FileReader {
+	private _filePath: string;
+	private _sets: DisjointSet;
+
+	constructor(filePath: string, sets: DisjointSet) {
+		this._filePath = filePath;
+		this._sets = sets;
+	}
+
+	public readFile() : void {
+		/*
+		Reads an input file line by line and make a disjoint set
+		using union pairs in each line.
+		Args:
+			no args
+		Returns:
+			no returns
+		*/
+		let line: Buffer;
+
+		try {
+			const liner = new lineByLine(this._filePath);
+		
+			while (line = liner.next()) {
+				const arr = line.toString().split(' ');
+				var nums = [];
+		
+				for (let str of arr) {
+					var num = parseInt(str);
+		
+					if (!isNaN(num)) {
+						nums.push(num);
+					}
+				}
+		
+				for (let num of nums) {
+					this._sets.makeset(num);
+				}
+		
+				for (let i = 0; i < nums.length - 1; i++) {
+					this._sets.union(nums[i], nums[i + 1]);
+				}
+		
+				console.log(nums);
+			}
+		} catch (err) {
+			console.log(`error: ${err.message}`);
+		}
 	}
 }
