@@ -110,12 +110,12 @@ class DisjointSet {
 	Analysis of time complexity of the delete operation
 	  * Deleting a leaf node is in constant time (O(1))
 	  * Deleting a non-leaf node is more complicated:
-		* Finding the root of the node - O(log n) worst case time,
+		* Finding the root of the node - O(lg n) worst case time,
 		  where n is the number of nodes in the set containing 
 		  the node to be deleted
 		* Finding an arbitrary leaf in the subtree of the node and swap them
-		  - O(log n) worst case time
-		* Overall, the time complexity is O(log n)
+		  - O(lg n) worst case time
+		* Overall, the time complexity is O(lg n)
 	  * Deleting the minimum member of a set:
 		Following the above operations, We need to traverse the tree
 		and find the new minimum member of the set 
